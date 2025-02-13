@@ -1,3 +1,3 @@
 export const environment = {
-    apiUrl: 'http://localhost:8000/fishing'
+    apiUrl: 'http://sonichu.world/api/fishing'
 };

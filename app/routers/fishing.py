@@ -9,7 +9,7 @@ from models.fishing import Player
 router = APIRouter()
 
 
-@router.get("/fishing/{username}", response_model=PlayerFishData)
+@router.get("/api/fishing/{username}", response_model=PlayerFishData)
 async def get_fishing_data(
     username: str, db=Depends(get_db), mcci_service: MCCIService = Depends()
 ):
