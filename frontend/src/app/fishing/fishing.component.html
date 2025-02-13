@@ -1,0 +1,66 @@
+<div class="fishing-container">
+  <h1>Minecraft Fishing Stats</h1>
+
+  <div class="search">
+    <input
+      type="text"
+      [(ngModel)]="username"
+      placeholder="Enter username"
+      aria-label="Username"
+    />
+    <button (click)="fetchData()">Search</button>
+  </div>
+
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <div *ngIf="playerFishData">
+    <div class="player-stats">
+      <h2>{{ playerFishData.username }}'s Fishing Stats</h2>
+      <p>Total Species: {{ playerFishData.total_species }}</p>
+      <p>Total Catches: {{ playerFishData.total_catches }}</p>
+      <p>Last Updated: {{ playerFishData.last_updated | date : "short" }}</p>
+    </div>
+
+    <!-- Group records by climate -->
+    <div *ngFor="let climate of climates" class="climate-group">
+      <h2 class="climate-divider">{{ climate }}</h2>
+      <div class="fish-records">
+        <div
+          *ngFor="let record of groupedRecords[climate]"
+          class="fish-record-card"
+          [ngClass]="{
+            'not-caught': record.weights.length === 0,
+            expanded: record.isExpanded
+          }"
+          (click)="record.isExpanded = !record.isExpanded"
+        >
+          <h3>{{ record.fish_data.name }}</h3>
+          <p>
+            <strong>Rarity:</strong>
+            <span class="rarity {{ record.fish_data.rarity }}">{{
+              record.fish_data.rarity
+            }}</span>
+          </p>
+          <p><strong>Climate:</strong> {{ record.fish_data.climate }}</p>
+          <p><strong>Collection:</strong> {{ record.fish_data.collection }}</p>
+          <p><strong>Catch Time:</strong> {{ record.fish_data.catchTime }}</p>
+          <p>
+            <strong>Elusive:</strong>
+            {{ record.fish_data.elusive ? "Yes" : "No" }}
+          </p>
+          <div class="details">
+            <h4>Weights</h4>
+            <ul>
+              <li *ngFor="let weight of record.weights">
+                <span class="weight {{ weight.weight }}">{{
+                  weight.weight
+                }}</span>
+                – First Caught: {{ weight.firstCaught | date : "longDate" }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
