@@ -55,6 +55,6 @@ class MCCIService:
             data = response.json()
             if errors := data.get("errors"):
                 raise HTTPException(status_code=400, detail=errors[0]["message"])
-            if not data["data"] or data["data"]["playerByUsername"]:
+            if not "playerByUsername" in data["data"]:
                 raise HTTPException(status_code=404, detail="Player not found")
             return data["data"]["playerByUsername"]
