@@ -135,22 +135,22 @@
   margin-right: 4px;
 }
 .rarity.COMMON {
-  background: #8d99ae;
+  background: #859494;
 }
 .rarity.UNCOMMON {
-  background: #2b9348;
+  background: #0a9000;
 }
 .rarity.RARE {
-  background: #f4a261;
+  background: #0653b7;
 }
 .rarity.EPIC {
-  background: #e76f51;
+  background: #9e32e7;
 }
 .rarity.LEGENDARY {
-  background: #bc4749;
+  background: #f57300;
 }
 .rarity.MYTHIC {
-  background: #7209b7;
+  background: #b42626;
 }
 
 /* Weight badges */

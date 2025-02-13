@@ -45,11 +45,16 @@ class MCCIService:
                 headers=self.headers,
             )
 
+            for header, value in response.headers.items():
+                if "x-ratelimit-remaining" in header.lower():
+                    print(f"{header}: {value}")
+
             if response.status_code != 200:
                 raise HTTPException(status_code=502, detail="API service unavailable")
 
             data = response.json()
             if errors := data.get("errors"):
                 raise HTTPException(status_code=400, detail=errors[0]["message"])
-
+            if not data["data"] or data["data"]["playerByUsername"]:
+                raise HTTPException(status_code=404, detail="Player not found")
             return data["data"]["playerByUsername"]

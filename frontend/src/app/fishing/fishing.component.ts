@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FishingService } from '../services/fishing.service';
 import { PlayerFishData, FishRecordBase } from '../services/fishing';
+import { intervalToDuration } from 'date-fns';
 
 // Define the three climates in the desired order
 type Climate = 'Temperate' | 'Tropical' | 'Barren';
@@ -14,6 +15,7 @@ export class FishingComponent implements OnInit {
   username: string = '';
   playerFishData?: PlayerFishData;
   errorMessage: string = '';
+  lastUpdatedMinutes: number = 0;
 
   // Order of climates
   climates: Climate[] = ['Temperate', 'Tropical', 'Barren'];
@@ -39,6 +41,7 @@ export class FishingComponent implements OnInit {
           this.playerFishData = data;
           this.errorMessage = '';
           this.sortAndGroupRecords();
+          this.updateLastUpdatedMinutes();
         },
         error: (error: Error) => {
           console.error('Error fetching data:', error);
@@ -52,6 +55,15 @@ export class FishingComponent implements OnInit {
           };
         },
       });
+    }
+  }
+
+  private updateLastUpdatedMinutes(): void {
+    if (this.playerFishData) {
+      const now = new Date();
+      const lastUpdated = new Date(this.playerFishData.last_updated);
+      const duration = intervalToDuration({ start: lastUpdated, end: now });
+      this.lastUpdatedMinutes = duration.minutes || 0;
     }
   }
 

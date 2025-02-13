@@ -22,6 +22,8 @@ async def get_fishing_data(
     # Fetch fresh data
     try:
         data = await mcci_service.get_player_fishing_data(username)
+        if "collections" not in data:
+            raise HTTPException(status_code=404, detail="Collection not found")
         player = crud.cache_player_data(username, data)
         return _build_response(data, player)
     except HTTPException as e:

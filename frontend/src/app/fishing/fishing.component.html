@@ -18,7 +18,7 @@
       <h2>{{ playerFishData.username }}'s Fishing Stats</h2>
       <p>Total Species: {{ playerFishData.total_species }}</p>
       <p>Total Catches: {{ playerFishData.total_catches }}</p>
-      <p>Last Updated: {{ playerFishData.last_updated | date : "short" }}</p>
+      <p>Last Updated: {{ lastUpdatedMinutes }} minutes ago</p>
     </div>
 
     <!-- Group records by climate -->
