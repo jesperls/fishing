@@ -35,6 +35,7 @@ async def get_fishing_data(
 def _build_response_from_cache(crud: FishingCRUD, username: str):
     player = crud.get_player(username)
     records = crud.get_fish_records(player.uuid)
+    statistics = player.statistics
 
     return PlayerFishData(
         username=player.username,
@@ -49,24 +50,37 @@ def _build_response_from_cache(crud: FishingCRUD, username: str):
             }
             for r in records
         ],
+        statistics=[
+            {
+                "key": stat.key,
+                "value": stat.value,
+            }
+            for stat in statistics
+        ],
+
     )
 
 
 def _build_response(raw_data: dict, player: Player):
     collections = raw_data.get("collections", {})
     fish_records = collections.get("fish", [])
+    statistics = [
+        {"key": key, "value": value}
+        for key, value in raw_data.get("statistics", {}).items()
+    ]
 
     return PlayerFishData(
         username=player.username,
         uuid=player.uuid,
-        total_species=sum(1 for record in fish_records if record["weights"]),
-        total_catches=sum(len(record["weights"]) for record in fish_records),
+        total_species=sum(1 for record in fish_records if record.get("weights")),
+        total_catches=sum(len(record.get("weights", [])) for record in fish_records),
         last_updated=datetime.now(),
         fish_records=[
             {
-                "fish_data": record["fish"],
-                "weights": record["weights"],
+                "fish_data": record.get("fish"),
+                "weights": record.get("weights"),
             }
             for record in fish_records
         ],
+        statistics=statistics,
     )

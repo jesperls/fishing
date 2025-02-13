@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from models.fishing import Player, FishRecord
 from datetime import datetime, timedelta
 from config.settings import Settings
+from models.fishing import Player, FishRecord, Statistic  # Updated import to include Statistic
 
 
 class FishingCRUD:
@@ -18,6 +18,13 @@ class FishingCRUD:
             .filter(FishRecord.player_uuid == player_uuid)
             .all()
         )
+    
+    def get_statistics(self, player_uuid: str):
+        return (
+            self.db.query(Statistic)
+            .filter(Statistic.player_uuid == player_uuid)
+            .all()
+        )
 
     def cache_player_data(self, username: str, data: dict):
         # Update or create player record
@@ -32,7 +39,6 @@ class FishingCRUD:
 
         # Update fish records
         self.db.query(FishRecord).filter(FishRecord.player_uuid == player.uuid).delete()
-
         for record in data["collections"]["fish"]:
             fish_record = FishRecord(
                 player_uuid=player.uuid,
@@ -41,6 +47,16 @@ class FishingCRUD:
                 last_caught=datetime.now(),
             )
             self.db.add(fish_record)
+
+        self.db.query(Statistic).filter(Statistic.player_uuid == player.uuid).delete()
+        if "statistics" in data:
+            for stat in data["statistics"]:
+                statistic = Statistic(
+                    player_uuid=player.uuid,
+                    key=stat,
+                    value=data["statistics"][stat],
+                )
+                self.db.add(statistic)
 
         self.db.commit()
         return player
